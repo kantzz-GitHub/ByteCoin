@@ -18,6 +18,7 @@ struct CoinManager {
         performRequest(with: myURLString)
     }
     
+    
     func performRequest(with urlString: String){
         if let url = URL(string: urlString){
             

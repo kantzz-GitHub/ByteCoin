@@ -6,6 +6,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var currencyPicker: UIPickerView!
     
     var coinManager = CoinManager()
+    
+    var currentCurrency: String = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -15,7 +17,7 @@ class ViewController: UIViewController {
     }
 }
 
-
+//MARK: - UIPickerViewDataSource
 extension ViewController: UIPickerViewDataSource{
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -27,7 +29,7 @@ extension ViewController: UIPickerViewDataSource{
     }
 }
 
-
+//MARK: - UIPickerViewDelegate
 extension ViewController: UIPickerViewDelegate{
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
@@ -36,12 +38,18 @@ extension ViewController: UIPickerViewDelegate{
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         coinManager.getCoinPrice(for: coinManager.currencyArray[row])
+        currentCurrency = coinManager.currencyArray[row]
     }
 }
 
+//MARK: - CoinManagerDelegate
 extension ViewController: CoinManagerDelegate{
     func didUpdateCoin(lastPrice: Double) {
-        print(lastPrice)
+        DispatchQueue.main.async {
+            self.bitcoinLabel.text = String(format: "%.2f", lastPrice)
+            self.currencyLabel.text = self.currentCurrency
+        }
+        
     }
     
     func didFailWithError(error: Error) {
